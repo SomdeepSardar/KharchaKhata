@@ -2,7 +2,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Expense, Category, AppSettings, Currency } from '../types';
 import { parseReceipt } from '../geminiService';
-import { CameraIcon, CheckCircle2Icon, ScanSearchIcon, PlusIcon, SparklesIcon } from 'lucide-react';
+import { CameraIcon, CheckCircle2Icon, PlusIcon, SparklesIcon } from 'lucide-react';
 
 interface AddExpenseModalProps {
   onAdd: (expense: Expense) => void;

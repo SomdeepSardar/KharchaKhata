@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Expense, AppSettings, Currency, M3ColorScheme } from './types';
+import { Expense, AppSettings, M3ColorScheme } from './types';
 import Dashboard from './components/Dashboard';
 import ExpenseList from './components/ExpenseList';
 import AddExpenseModal from './components/AddExpenseModal';
