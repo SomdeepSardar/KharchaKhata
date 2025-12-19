@@ -1,6 +1,6 @@
-
 import React from 'react';
-import { Expense, Category, AppSettings, Currency } from '../types';
+import { Expense, Category, AppSettings, CURRENCY_SYMBOLS } from '../types';
+import { getGlassClass } from '../utils';
 import { Trash2Icon, ShoppingBagIcon, CoffeeIcon, HomeIcon, CarIcon, HeartIcon, FilmIcon, ZapIcon, DollarSignIcon, HelpCircleIcon, ListIcon } from 'lucide-react';
 
 interface ExpenseListProps {
@@ -8,10 +8,6 @@ interface ExpenseListProps {
   onDelete: (id: string) => void;
   settings: AppSettings;
 }
-
-const CURRENCY_SYMBOLS: Record<Currency, string> = {
-  INR: '₹', USD: '$', EUR: '€', GBP: '£', JPY: '¥'
-};
 
 const CategoryIcon = ({ category, size = 20 }: { category: Category, size?: number }) => {
   switch (category) {
@@ -29,7 +25,7 @@ const CategoryIcon = ({ category, size = 20 }: { category: Category, size?: numb
 
 const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete, settings }) => {
   const symbol = CURRENCY_SYMBOLS[settings.currency];
-  const glassClass = settings.isGlassEnabled ? 'backdrop-blur-xl' : '';
+  const glassClass = getGlassClass(settings.isGlassEnabled, 'backdrop-blur-xl');
 
   if (expenses.length === 0) {
     return (

@@ -1,6 +1,6 @@
-
 import React, { useMemo } from 'react';
-import { Expense, AppSettings, Currency } from '../types';
+import { Expense, AppSettings, CURRENCY_SYMBOLS } from '../types';
+import { getGlassClass } from '../utils';
 import { 
   ResponsiveContainer, 
   BarChart, 
@@ -15,15 +15,10 @@ interface DashboardProps {
   settings: AppSettings;
 }
 
-const CURRENCY_SYMBOLS: Record<Currency, string> = {
-  INR: '₹', USD: '$', EUR: '€', GBP: '£', JPY: '¥'
-};
-
 const Dashboard: React.FC<DashboardProps> = ({ expenses, settings }) => {
   const symbol = CURRENCY_SYMBOLS[settings.currency];
-  const glassClass = settings.isGlassEnabled ? 'backdrop-blur-2xl backdrop-saturate-150 border-white/20 dark:border-white/10' : '';
+  const glassClass = getGlassClass(settings.isGlassEnabled, 'backdrop-blur-2xl backdrop-saturate-150 border-white/20 dark:border-white/10');
   
-  // Adjusted backgrounds for OLED mode
   const cardBg = settings.theme === 'dark' 
     ? (settings.darkThemeType === 'true' ? 'bg-white/5' : 'bg-slate-900/40') 
     : 'bg-white/40';
@@ -58,7 +53,6 @@ const Dashboard: React.FC<DashboardProps> = ({ expenses, settings }) => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
-      {/* Balance Card */}
       <div className="p-8 rounded-[40px] shadow-2xl relative overflow-hidden border transition-all duration-700 border-white/5" style={{ background: mainCardBg }}>
         <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -mr-24 -mt-24 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full -ml-16 -mb-16 blur-2xl" />
@@ -85,14 +79,18 @@ const Dashboard: React.FC<DashboardProps> = ({ expenses, settings }) => {
         </div>
       </div>
 
-      {/* Analytics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className={`p-6 rounded-[32px] border transition-all ${cardBg} ${glassClass} shadow-sm`}>
+        <div className={`p-6 rounded-[32px] border transition-all ${cardBg} ${glassClass} shadow-sm min-w-0`}>
           <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Velocity Scan</h3>
-          <div className="h-[220px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={stats.barData}>
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: settings.theme === 'dark' ? '#475569' : '#94a3b8', fontSize: 10, fontWeight: 800}} />
+          <div className="h-[220px] w-full min-w-0 relative">
+            <ResponsiveContainer width="100%" height="100%" minHeight={220}>
+              <BarChart data={stats.barData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <XAxis 
+                  dataKey="date" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{fill: settings.theme === 'dark' ? '#475569' : '#94a3b8', fontSize: 10, fontWeight: 800}} 
+                />
                 <YAxis hide />
                 <Tooltip 
                   cursor={{fill: 'var(--m3-primary)', opacity: 0.1, radius: 8}} 
@@ -123,9 +121,9 @@ const Dashboard: React.FC<DashboardProps> = ({ expenses, settings }) => {
           <div className="space-y-4">
             {stats.pieData.sort((a,b) => b.value - a.value).slice(0, 4).map((item) => (
               <div key={item.name} className="flex items-center gap-4 group cursor-default">
-                <div className="w-2.5 h-12 rounded-full transition-all group-hover:scale-y-110 bg-slate-200 dark:bg-white/10" />
-                <div className="flex-1">
-                  <p className="text-sm font-black opacity-90">{item.name}</p>
+                <div className="w-1.5 h-10 rounded-full transition-all group-hover:scale-y-110 bg-slate-200 dark:bg-white/10 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-black opacity-90 truncate">{item.name}</p>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-1 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
                       <div 
@@ -133,10 +131,10 @@ const Dashboard: React.FC<DashboardProps> = ({ expenses, settings }) => {
                         style={{ width: `${(item.value / (stats.total || 1)) * 100}%`, backgroundColor: 'var(--m3-primary)' }}
                       />
                     </div>
-                    <p className="text-[10px] text-slate-400 font-black">{Math.round((item.value / (stats.total || 1)) * 100)}%</p>
+                    <p className="text-[10px] text-slate-400 font-black shrink-0">{Math.round((item.value / (stats.total || 1)) * 100)}%</p>
                   </div>
                 </div>
-                <p className="font-black text-sm">{symbol}{item.value.toLocaleString()}</p>
+                <p className="font-black text-sm shrink-0">{symbol}{item.value.toLocaleString()}</p>
               </div>
             ))}
             {stats.pieData.length === 0 && (

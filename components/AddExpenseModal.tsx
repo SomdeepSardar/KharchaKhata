@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Expense, Category, AppSettings, Currency } from '../types';
+import { Expense, Category, AppSettings, CATEGORIES, CURRENCY_SYMBOLS } from '../types';
+import { triggerHaptic } from '../utils';
 import { parseReceipt } from '../geminiService';
 import { CameraIcon, CheckCircle2Icon, PlusIcon, SparklesIcon } from 'lucide-react';
 
@@ -7,14 +8,6 @@ interface AddExpenseModalProps {
   onAdd: (expense: Expense) => void;
   settings: AppSettings;
 }
-
-const CATEGORIES: Category[] = [
-  'Food & Dining', 'Transport', 'Housing', 'Entertainment', 'Shopping', 'Health', 'Utilities', 'Income', 'Other'
-];
-
-const CURRENCY_SYMBOLS: Record<Currency, string> = {
-  INR: '₹', USD: '$', EUR: '€', GBP: '£', JPY: '¥'
-};
 
 const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd, settings }) => {
   const [activeMode, setActiveMode] = useState<'manual' | 'scan'>('manual');
@@ -31,10 +24,6 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd, settings }) =>
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const detectionIntervalRef = useRef<number | null>(null);
-
-  const triggerHaptic = () => {
-    if ('vibrate' in navigator) navigator.vibrate([10, 30, 10]);
-  };
 
   const startCamera = async () => {
     setActiveMode('scan');
@@ -84,7 +73,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd, settings }) =>
       const extracted = await parseReceipt(base64Image);
       
       if (extracted.amount && extracted.merchant) {
-        triggerHaptic();
+        triggerHaptic([10, 30, 10]);
         setDetectionStatus('detected');
         setIsScanning(true);
         
@@ -212,7 +201,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd, settings }) =>
               className={`w-full p-5 rounded-2xl border transition-all font-bold focus:outline-none focus:ring-4 focus:ring-blue-500/20 ${
                 settings.theme === 'dark' 
                   ? 'bg-slate-800 border-slate-700 text-white placeholder:text-slate-600' 
-                  : 'bg-slate-50 border-slate-200 placeholder:text-slate-400'
+                  : 'bg-slate-50 border-slate-200 placeholder:text-slate-400 text-slate-900'
               }`}
               value={formData.merchant}
               onChange={e => setFormData({...formData, merchant: e.target.value})}
@@ -231,7 +220,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd, settings }) =>
                   className={`w-full p-5 pl-10 rounded-2xl border transition-all font-black text-lg focus:outline-none focus:ring-4 focus:ring-blue-500/20 ${
                     settings.theme === 'dark' 
                       ? 'bg-slate-800 border-slate-700 text-white' 
-                      : 'bg-slate-50 border-slate-200'
+                      : 'bg-slate-50 border-slate-200 text-slate-900'
                   }`}
                   value={formData.amount}
                   onChange={e => setFormData({...formData, amount: e.target.value})}
@@ -246,7 +235,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd, settings }) =>
                 className={`w-full p-5 rounded-2xl border transition-all font-bold focus:outline-none focus:ring-4 focus:ring-blue-500/20 ${
                   settings.theme === 'dark' 
                     ? 'bg-slate-800 border-slate-700 text-white' 
-                    : 'bg-slate-50 border-slate-200'
+                    : 'bg-slate-50 border-slate-200 text-slate-900'
                 }`}
                 value={formData.date}
                 onChange={e => setFormData({...formData, date: e.target.value})}

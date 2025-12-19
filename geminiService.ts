@@ -1,13 +1,7 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
-import { Expense, Category } from "./types";
-
-const CATEGORIES: Category[] = [
-  'Food & Dining', 'Transport', 'Housing', 'Entertainment', 'Shopping', 'Health', 'Utilities', 'Income', 'Other'
-];
+import { Expense, CATEGORIES } from "./types";
 
 export async function parseReceipt(base64Image: string): Promise<Partial<Expense>> {
-  // Fix: Initializing GoogleGenAI using process.env.API_KEY directly as per guidelines
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const model = "gemini-3-flash-preview";
   
@@ -50,7 +44,6 @@ export async function parseReceipt(base64Image: string): Promise<Partial<Expense
 }
 
 export async function getSpendingInsights(expenses: Expense[]): Promise<string> {
-  // Fix: Initializing GoogleGenAI using process.env.API_KEY directly as per guidelines
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const model = "gemini-3-flash-preview";
   const expenseSummary = expenses.map(e => `${e.date}: ${e.merchant} - ${e.amount} (${e.category})`).join('\n');
@@ -67,7 +60,6 @@ export async function getSpendingInsights(expenses: Expense[]): Promise<string> 
 }
 
 export async function generateAppIcon(): Promise<string | null> {
-  // Fix: Initializing GoogleGenAI using process.env.API_KEY directly as per guidelines
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const model = 'gemini-2.5-flash-image';
   
