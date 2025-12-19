@@ -175,9 +175,10 @@ const App: React.FC = () => {
   const glassClass = settings.isGlassEnabled ? 'backdrop-blur-2xl backdrop-saturate-150 backdrop-contrast-[1.1]' : '';
   const currentPalette = M3_PALETTES[settings.colorScheme];
 
+  // Increased opacity for light mode footer to ensure visibility
   const headerFooterBg = settings.theme === 'dark'
     ? (settings.darkThemeType === 'true' ? 'bg-black/40' : 'bg-white/5')
-    : 'bg-white/40';
+    : 'bg-white/85';
 
   return (
     <div className={`min-h-screen transition-all duration-700 pb-28 text-slate-900 dark:text-slate-100 bg-[var(--app-bg)]`}>
@@ -323,10 +324,13 @@ const App: React.FC = () => {
 
 const NavButton = ({ active, onClick, icon, label }: any) => (
   <button onClick={onClick} className="flex flex-col items-center flex-1 transition-all">
-    <div className={`transition-all duration-500 mb-1 flex items-center justify-center ${active ? 'nav-active-bg' : 'text-slate-400'}`}>
+    <div className={`transition-all duration-500 mb-1 flex items-center justify-center ${active ? 'nav-active-bg' : 'text-slate-500 dark:text-slate-400'}`}>
       {icon}
     </div>
-    <span className={`text-[10px] font-bold tracking-tight transition-colors ${active ? 'text-indigo-600 dark:text-white' : 'text-slate-400'}`}>
+    <span 
+      className={`text-[10px] font-bold tracking-tight transition-colors ${active ? 'dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}
+      style={active ? { color: 'var(--m3-primary)' } : {}}
+    >
       {label}
     </span>
   </button>
