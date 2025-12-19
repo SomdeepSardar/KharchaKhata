@@ -12,8 +12,7 @@ import {
   Trash2Icon,
   AlertTriangleIcon,
   DownloadIcon,
-  UploadIcon,
-  DatabaseIcon
+  UploadIcon
 } from 'lucide-react';
 
 interface SettingsTabProps {
