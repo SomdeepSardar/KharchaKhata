@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Expense, AppSettings, M3ColorScheme } from './types';
 import Dashboard from './components/Dashboard';

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Expense, Category, AppSettings, Currency } from '../types';
 import { parseReceipt } from '../geminiService';
