@@ -10,6 +10,18 @@ export type Category =
   | 'Income'
   | 'Other';
 
+export type Currency = 'INR' | 'USD' | 'EUR' | 'GBP' | 'JPY';
+export type M3ColorScheme = 'indigo' | 'emerald' | 'rose' | 'amber';
+
+export interface AppSettings {
+  theme: 'light' | 'dark';
+  darkThemeType: 'regular' | 'true';
+  currency: Currency;
+  colorScheme: M3ColorScheme;
+  isM3Enabled: boolean;
+  isGlassEnabled: boolean;
+}
+
 export interface Expense {
   id: string;
   amount: number;

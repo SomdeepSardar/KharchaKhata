@@ -7,7 +7,8 @@ const CATEGORIES: Category[] = [
 ];
 
 export async function parseReceipt(base64Image: string): Promise<Partial<Expense>> {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  // Fix: Initializing GoogleGenAI using process.env.API_KEY directly as per guidelines
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const model = "gemini-3-flash-preview";
   
   const response = await ai.models.generateContent({
@@ -49,17 +50,47 @@ export async function parseReceipt(base64Image: string): Promise<Partial<Expense
 }
 
 export async function getSpendingInsights(expenses: Expense[]): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  // Fix: Initializing GoogleGenAI using process.env.API_KEY directly as per guidelines
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const model = "gemini-3-flash-preview";
-  const expenseSummary = expenses.map(e => `${e.date}: ${e.merchant} - ₹${e.amount} (${e.category})`).join('\n');
+  const expenseSummary = expenses.map(e => `${e.date}: ${e.merchant} - ${e.amount} (${e.category})`).join('\n');
   
   const response = await ai.models.generateContent({
     model,
-    contents: `Analyze these expenses (amounts in Indian Rupees ₹) and provide 3 concise, actionable financial insights or tips to save money in the Indian context. Format as Markdown bullets.\n\nExpenses:\n${expenseSummary}`,
+    contents: `Analyze these expenses and provide 3 concise, actionable financial insights. Format as Markdown bullets.\n\nExpenses:\n${expenseSummary}`,
     config: {
-      systemInstruction: "You are a professional financial advisor specializing in Indian personal finance. Be encouraging but direct."
+      systemInstruction: "You are a professional financial advisor. Be encouraging but direct."
     }
   });
 
   return response.text || "No insights available at the moment.";
+}
+
+export async function generateAppIcon(): Promise<string | null> {
+  // Fix: Initializing GoogleGenAI using process.env.API_KEY directly as per guidelines
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const model = 'gemini-2.5-flash-image';
+  
+  const response = await ai.models.generateContent({
+    model,
+    contents: {
+      parts: [
+        {
+          text: 'A modern, high-tech fintech mobile app icon for "KharchaKhata". Minimalist geometric design, blue and silver palette, sleek 3D glassmorphism effect, premium look, white background.',
+        },
+      ],
+    },
+    config: {
+      imageConfig: {
+        aspectRatio: "1:1"
+      }
+    }
+  });
+
+  for (const part of response.candidates?.[0]?.content?.parts || []) {
+    if (part.inlineData) {
+      return `data:image/png;base64,${part.inlineData.data}`;
+    }
+  }
+  return null;
 }
