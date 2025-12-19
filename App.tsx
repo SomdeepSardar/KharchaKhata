@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Expense, Category } from './types';
+import { Expense } from './types';
 import Dashboard from './components/Dashboard';
 import ExpenseList from './components/ExpenseList';
 import AddExpenseModal from './components/AddExpenseModal';
@@ -10,7 +10,8 @@ import {
   LayoutDashboardIcon, 
   ListIcon, 
   LightbulbIcon,
-  XIcon
+  XIcon,
+  DollarSignIcon
 } from 'lucide-react';
 
 const STORAGE_KEY = 'smart_expense_tracker_v1';
@@ -210,8 +211,5 @@ const NavButton: React.FC<NavButtonProps> = ({ active, onClick, icon, label }) =
     </span>
   </button>
 );
-
-// Fallback for missing icon in initial code block
-import { DollarSignIcon } from 'lucide-react';
 
 export default App;

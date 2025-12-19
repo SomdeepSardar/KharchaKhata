@@ -2,13 +2,12 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Expense, Category } from "./types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 const CATEGORIES: Category[] = [
   'Food & Dining', 'Transport', 'Housing', 'Entertainment', 'Shopping', 'Health', 'Utilities', 'Income', 'Other'
 ];
 
 export async function parseReceipt(base64Image: string): Promise<Partial<Expense>> {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
   const model = "gemini-3-flash-preview";
   
   const response = await ai.models.generateContent({
@@ -50,6 +49,7 @@ export async function parseReceipt(base64Image: string): Promise<Partial<Expense
 }
 
 export async function getSpendingInsights(expenses: Expense[]): Promise<string> {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
   const model = "gemini-3-flash-preview";
   const expenseSummary = expenses.map(e => `${e.date}: ${e.merchant} - ₹${e.amount} (${e.category})`).join('\n');
   

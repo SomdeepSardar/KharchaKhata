@@ -2,7 +2,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Expense, Category } from '../types';
 import { parseReceipt } from '../geminiService';
-import { CameraIcon, Loader2Icon, CheckCircle2Icon, ScanSearchIcon, AlertCircleIcon } from 'lucide-react';
+import { CameraIcon, CheckCircle2Icon, ScanSearchIcon, PlusIcon } from 'lucide-react';
 
 interface AddExpenseModalProps {
   onAdd: (expense: Expense) => void;
@@ -77,11 +77,9 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd }) => {
     canvasRef.current.height = videoRef.current.videoHeight;
     context?.drawImage(videoRef.current, 0, 0);
     
-    const base64Image = canvasRef.current.toDataURL('image/jpeg', 0.6); // Lower quality for faster detection
+    const base64Image = canvasRef.current.toDataURL('image/jpeg', 0.6);
 
     try {
-      // Use the parseReceipt service but we treat it as an "auto-detector"
-      // If it returns valid data, we consider it a successful "detection"
       const extracted = await parseReceipt(base64Image);
       
       if (extracted.amount && extracted.merchant) {
@@ -97,7 +95,6 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd }) => {
           date: extracted.date || prev.date,
         }));
 
-        // Give a small delay to show the "detected" state before switching
         setTimeout(() => {
           stopCamera();
           setActiveMode('manual');
@@ -106,14 +103,12 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd }) => {
         }, 800);
       }
     } catch (err) {
-      // Silently fail detection attempts
       console.debug("Detection attempt failed or no receipt found");
     }
   }, [isScanning, stopCamera]);
 
   useEffect(() => {
     if (activeMode === 'scan') {
-      // Check for receipt every 3 seconds
       detectionIntervalRef.current = window.setInterval(() => {
         performAutoCapture();
       }, 3000);
@@ -141,12 +136,14 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd }) => {
     <div className="p-6">
       <div className="flex gap-4 mb-6 p-1 bg-slate-100 rounded-2xl">
         <button 
+          type="button"
           onClick={() => setActiveMode('manual')}
           className={`flex-1 py-2 px-4 rounded-xl font-semibold transition-all ${activeMode === 'manual' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500'}`}
         >
           Manual Entry
         </button>
         <button 
+          type="button"
           onClick={startCamera}
           className={`flex-1 py-2 px-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${activeMode === 'scan' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500'}`}
         >
@@ -160,24 +157,19 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd }) => {
           <video ref={videoRef} className="w-full h-full object-cover opacity-80" playsInline muted />
           <canvas ref={canvasRef} className="hidden" />
           
-          {/* Scanning Animation Overlays */}
           <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center">
-            {/* Guide Box */}
             <div className={`w-[80%] aspect-[1/1.4] border-2 transition-all duration-500 rounded-2xl ${detectionStatus === 'detected' ? 'border-emerald-400 scale-105 shadow-[0_0_20px_rgba(52,211,153,0.5)]' : 'border-white/30'}`}>
-              {/* Corner Accents */}
               <div className="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-blue-500 rounded-tl-lg" />
               <div className="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-blue-500 rounded-tr-lg" />
               <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-blue-500 rounded-bl-lg" />
               <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-blue-500 rounded-br-lg" />
               
-              {/* Laser Line */}
               {detectionStatus === 'searching' && (
                 <div className="absolute left-0 right-0 h-1 bg-blue-500/50 shadow-[0_0_15px_#3b82f6] animate-[scan_2s_ease-in-out_infinite]" />
               )}
             </div>
           </div>
 
-          {/* Status Badge */}
           <div className="absolute top-6 left-0 right-0 flex justify-center">
             <div className={`px-4 py-2 rounded-full backdrop-blur-md flex items-center gap-2 transition-all duration-300 ${
               detectionStatus === 'detected' ? 'bg-emerald-500/90 text-white' : 'bg-black/40 text-white/90'
@@ -191,7 +183,6 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd }) => {
             </div>
           </div>
 
-          {/* Bottom Help Text */}
           <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 px-8 text-center">
             <p className="text-white/60 text-[10px] font-medium uppercase tracking-[0.2em]">AI Powered Detection</p>
             <p className="text-white/40 text-[9px]">Hold steady. The app will capture once details are clear.</p>
@@ -271,8 +262,5 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ onAdd }) => {
     </div>
   );
 };
-
-// Re-importing locally to ensure availability
-import { PlusIcon } from 'lucide-react';
 
 export default AddExpenseModal;
