@@ -1,0 +1,10 @@
+
+{
+  "name": "kharchakhata",
+  "version": "1.0.0",
+  "description": "Smart Expense Tracker with AI Receipt Scanning",
+  "private": true,
+  "scripts": {
+    "start": "npx serve ."
+  }
+}

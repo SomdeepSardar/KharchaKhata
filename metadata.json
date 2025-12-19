@@ -1,0 +1,7 @@
+{
+  "name": "KharchaKhata",
+  "description": "A high-performance expense management tool featuring AI-powered receipt scanning, real-time spending insights, and interactive financial dashboards.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
